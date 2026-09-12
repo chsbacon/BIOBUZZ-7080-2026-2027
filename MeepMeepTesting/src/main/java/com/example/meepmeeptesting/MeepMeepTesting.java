@@ -28,8 +28,13 @@ public class MeepMeepTesting {
                 .lineToY(0)
                 .turn(Math.toRadians(90))
                 .build());
-
-        meepMeep.setBackground(MeepMeep.Background.FIELD_DECODE_OFFICIAL)
+        Image customImg = null;
+        try {
+            customImg = ImageIO.read(new File("C:/Users/Noah/StudioProjects/BIOBUZZ-7080-2026-2027/MeepMeepTesting/src/main/java/com/example/meepmeeptesting/FIELD_BIOBUZZ_OFFICAL.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        meepMeep.setBackground(customImg)
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
                 .addEntity(myBot)
