@@ -10,7 +10,7 @@ import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
-public class MeepMeepTesting {
+public class launchPark {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(700);
 
@@ -19,8 +19,14 @@ public class MeepMeepTesting {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 18)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-61, 0, Math.toRadians(0)))
-                .splineToLinearHeading(new Pose2d(-50,-60,Math.toRadians(90)),Math.toRadians(-90))
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(61, -9, Math.toRadians(180)))
+                .splineToLinearHeading(new Pose2d(36,-12,Math.toRadians(180)),Math.toRadians(180))
+                //launch()
+                .waitSeconds(2)
+                .turn(Math.toRadians(90))
+                .splineToSplineHeading(new Pose2d(0,-45,Math.toRadians(180)),Math.toRadians(180))
+                .splineToLinearHeading(new Pose2d(-24,-55,Math.toRadians(90)),Math.toRadians(180))
+
                 .build());
         Image customImg = null;
         try {
