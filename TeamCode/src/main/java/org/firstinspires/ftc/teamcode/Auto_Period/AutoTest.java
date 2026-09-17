@@ -16,7 +16,6 @@ public class AutoTest extends LinearOpMode{
         waitForStart();
         Actions.runBlocking(
                 drive.actionBuilder(beginPose)
-                        .lineToX(-30)
                         .splineToLinearHeading(new Pose2d(-35, -60 , Math.toRadians(90)), Math.toRadians(-90))
                         .build()
         );
