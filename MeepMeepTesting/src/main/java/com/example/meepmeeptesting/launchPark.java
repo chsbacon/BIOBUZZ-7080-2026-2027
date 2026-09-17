@@ -19,8 +19,8 @@ public class launchPark {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 18)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(61, -9, Math.toRadians(180)))
-                .splineToLinearHeading(new Pose2d(36,-12,Math.toRadians(180)),Math.toRadians(180))
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(61, -12, Math.toRadians(180)))
+                .strafeTo(new Vector2d(40,-12))
                 //launch()
                 .waitSeconds(2)
                 .turn(Math.toRadians(90))
