@@ -10,6 +10,9 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 @TeleOp(name="TeleOpMain")
-public class TeleOpMain {
+public class TeleOpMain extends LinearOpMode{
+    @Override
+    public void runOpMode() throws InterruptedException {
 
+    }
 }
