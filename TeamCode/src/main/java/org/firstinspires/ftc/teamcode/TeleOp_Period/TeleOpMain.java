@@ -48,7 +48,7 @@ public class TeleOpMain extends LinearOpMode{
             if (!headingLock) {
                 targetHeading = anglesToCardnal(angle);
             }
-            double error= targetHeading - angle;
+            double error= normalizeAngle(targetHeading - angle);
             if(Math.abs(error)<0.5){//At the request of alston, this has been changed to 0.5 degrees
                 headingLock = false;
             }
@@ -66,11 +66,17 @@ public class TeleOpMain extends LinearOpMode{
             } else{
                 rotPower=-gamepad1.right_stick_x;
             }
+            Vector2d input = new Vector2d(
+                    -gamepad1.left_stick_y,
+                    -gamepad1.left_stick_x
+            );
+            double[] temp = changeMe(input.x,input.y,angle);
+            Vector2d rotatedInput = new Vector2d(
+                    temp[0],
+                    temp[1]
+            );
             drive.setDrivePowers(new PoseVelocity2d(
-                    new Vector2d(
-                            -gamepad1.left_stick_y,
-                            -gamepad1.left_stick_x
-                    ),
+                    rotatedInput,
                     rotPower
                 ));
 
@@ -98,9 +104,21 @@ public class TeleOpMain extends LinearOpMode{
             return 180;
         }
     }
+    public double normalizeAngle(double angle) {
+
+        while (angle >= 180) {
+            angle -= 360;
+        }
+
+        while (angle < -180) {
+            angle += 360;
+        }
+
+        return angle;
+    }
     public double DpadAngle (double theOtherOption){
         if(gamepad1.dpad_down) {
-            return 180 + 0.0001;
+            return 180;
         }else if(gamepad1.dpad_up){
             return 0;
         }else if(gamepad1.dpad_right) {
@@ -123,5 +141,25 @@ public class TeleOpMain extends LinearOpMode{
         } else{
             return false;
         }
+    }
+    public static double[] changeMe(double x, double y,double state){
+        double r=Math.sqrt(x*x+y*y);
+        double A=state;
+        double A1=180-A;
+        double a=x*Math.toDegrees(Math.cos(A))-y*Math.toDegrees(Math.cos(A));
+        double b=x*Math.toDegrees(Math.cos(A))+y*Math.toDegrees(Math.cos(A));
+        double a1=x*Math.toDegrees(Math.cos(A1))-y*Math.toDegrees(Math.cos(A1));
+        double b1=x*Math.toDegrees(Math.cos(A1))+y*Math.toDegrees(Math.cos(A1));
+        if(y!=0)
+            x=(a+a1)/(y*(a+a1));
+        else
+            x=(a+a1);
+        if(x!=0)
+            y=(b+b1)/(x*(b+b1));
+        else
+            y=b+b1;
+        double[]gg={x,y};
+        return gg;
+
     }
 }
