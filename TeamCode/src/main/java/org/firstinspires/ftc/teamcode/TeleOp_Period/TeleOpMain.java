@@ -31,34 +31,39 @@ public class TeleOpMain extends LinearOpMode{
     public void runOpMode() throws InterruptedException {
         drive = new MecanumDrive(hardwareMap,new Pose2d(0, 0, 0));
         int modeSwitch=0;
+        boolean headingLock = false;
+        boolean prevCircle = false;
         waitForStart();
         runtime.reset();
-        double offset = 0;
         double targetHeading = 0;
         while(opModeIsActive()) {
             double pCoff = MecanumDrive.PARAMS.pCoff;
             drive.updatePoseEstimate();
             Pose2d pose = drive.localizer.getPose();
             double angle = Math.toDegrees(pose.heading.toDouble());
-            if(gamepad1.left_bumper){
-                offset+=1;
+            if(DpadChecker()) {
+                headingLock = true;
+                targetHeading = DpadAngle(anglesToCardnal(angle));
             }
-            if(gamepad1.right_bumper){
-                offset-=1;
+            if (!headingLock) {
+                targetHeading = anglesToCardnal(angle);
             }
-            targetHeading = anglesToCardnal(angle,offset);
-            double error= targetHeading - angle;;
+            double error= targetHeading - angle;
+            if(Math.abs(error)<0.5){//At the request of alston, this has been changed to 0.5 degrees
+                headingLock = false;
+            }
             double rotPower;
-            if(gamepad1.circle){
-                if(modeSwitch==1){
-                    modeSwitch=0;
+            if(gamepad1.circle && !prevCircle){
+                if(modeSwitch==0){
+                    modeSwitch=1;
+                }else {
+                    modeSwitch = 0;
                 }
-                modeSwitch=1;
             }
-            if(modeSwitch>=1){
+            prevCircle = gamepad1.circle;
+            if(modeSwitch==0){
                 rotPower=error*pCoff;
-            }
-            else{
+            } else{
                 rotPower=-gamepad1.right_stick_x;
             }
             drive.setDrivePowers(new PoseVelocity2d(
@@ -72,9 +77,9 @@ public class TeleOpMain extends LinearOpMode{
             telemetry.addData("x", pose.position.x);
             telemetry.addData("y", pose.position.y);
             telemetry.addData("heading (deg)", Math.toDegrees(pose.heading.toDouble()));
-            telemetry.addData("Sigma",anglesToCardnal(Math.toDegrees(pose.heading.toDouble()),offset));
-            telemetry.addData("offset", offset);
+            telemetry.addData("ortCard",anglesToCardnal(Math.toDegrees(pose.heading.toDouble())));
             telemetry.addData("error",error);
+            telemetry.addData("mode",modeSwitch);
             telemetry.update();
 
             TelemetryPacket packet = new TelemetryPacket();
@@ -84,16 +89,39 @@ public class TeleOpMain extends LinearOpMode{
         }
     }
     //returns the clostest
-    public double anglesToCardnal(double angle,double offset){
-        if(Math.abs(angle)<45){
-            return 0+offset;
-        }else if(Math.abs(angle)<135){
-            return 90*Math.signum(angle)+offset;
-        } else if(Math.abs(angle)<225) {
-            return 180 * Math.signum(angle)+offset;
-        }else if(Math.abs(angle)<315){
-            return 270*Math.signum(angle)+offset;
+    public double anglesToCardnal(double angle){
+        if(angle >= -45 && angle <= 45){
+            return 0;
+        } else if (angle >= -135 && angle <= 135){
+            return 90*Math.signum(angle);
+        } else {
+            return 180;
         }
-        return 0;
+    }
+    public double DpadAngle (double theOtherOption){
+        if(gamepad1.dpad_down) {
+            return 180 + 0.0001;
+        }else if(gamepad1.dpad_up){
+            return 0;
+        }else if(gamepad1.dpad_right) {
+            return -90;
+        }else if(gamepad1.dpad_left){
+            return 90;
+        } else {
+            return theOtherOption;
+        }
+    }
+    public boolean DpadChecker (){
+        if(gamepad1.dpad_down) {
+            return true;
+        }else if(gamepad1.dpad_up){
+            return true;
+        }else if(gamepad1.dpad_right) {
+            return true;
+        }else if(gamepad1.dpad_left){
+            return true;
+        } else{
+            return false;
+        }
     }
 }
