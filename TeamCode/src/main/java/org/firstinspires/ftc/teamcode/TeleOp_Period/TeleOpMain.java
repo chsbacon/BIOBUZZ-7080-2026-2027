@@ -52,6 +52,7 @@ public class TeleOpMain extends LinearOpMode{
             if(Math.abs(error)<0.5){//At the request of alston, this has been changed to 0.5 degrees
                 headingLock = false;
             }
+            //67
             double rotPower;
             if(gamepad1.circle && !prevCircle){
                 if(modeSwitch==0){
