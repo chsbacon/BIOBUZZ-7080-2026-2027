@@ -52,7 +52,6 @@ public class TeleOpMain extends LinearOpMode{
             if(Math.abs(error)<0.5){//At the request of alston, this has been changed to 0.5 degrees
                 headingLock = false;
             }
-            //67
             double rotPower;
             if(gamepad1.circle && !prevCircle){
                 if(modeSwitch==0){
@@ -71,13 +70,16 @@ public class TeleOpMain extends LinearOpMode{
                     -gamepad1.left_stick_y,
                     -gamepad1.left_stick_x
             );
-            double[] temp = changeMe(input.x,input.y,angle);
-            Vector2d rotatedInput = new Vector2d(
-                    temp[0],
-                    temp[1]
+            //Takes inpute joystick commands and outpouts rotated verson to take into accoun the roentaion of the robot
+            double[] rTheta = new double[2];
+            rTheta[0]=Math.sqrt((input.x*input.x)+(input.y*input.y));
+            rTheta[1]=Math.toDegrees(Math.atan2(input.y,input.x))-angle;
+            Vector2d rot = new Vector2d(
+                    -rTheta[0]*Math.cos(rTheta[1]),
+                    -rTheta[0]*Math.sin(rTheta[1])
             );
             drive.setDrivePowers(new PoseVelocity2d(
-                    rotatedInput,
+                    rot,
                     rotPower
                 ));
 
@@ -142,25 +144,5 @@ public class TeleOpMain extends LinearOpMode{
         } else{
             return false;
         }
-    }
-    public static double[] changeMe(double x, double y,double state){
-        double r=Math.sqrt(x*x+y*y);
-        double A=state;
-        double A1=180-A;
-        double a=x*Math.toDegrees(Math.cos(A))-y*Math.toDegrees(Math.cos(A));
-        double b=x*Math.toDegrees(Math.cos(A))+y*Math.toDegrees(Math.cos(A));
-        double a1=x*Math.toDegrees(Math.cos(A1))-y*Math.toDegrees(Math.cos(A1));
-        double b1=x*Math.toDegrees(Math.cos(A1))+y*Math.toDegrees(Math.cos(A1));
-        if(y!=0)
-            x=(a+a1)/(y*(a+a1));
-        else
-            x=(a+a1);
-        if(x!=0)
-            y=(b+b1)/(x*(b+b1));
-        else
-            y=b+b1;
-        double[]gg={x,y};
-        return gg;
-
     }
 }
