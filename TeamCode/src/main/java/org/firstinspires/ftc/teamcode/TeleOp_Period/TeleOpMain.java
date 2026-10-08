@@ -70,6 +70,7 @@ public class TeleOpMain extends LinearOpMode{
                     -gamepad1.left_stick_y,
                     -gamepad1.left_stick_x
             );
+            //walahi
             //Takes inpute joystick commands and outpouts rotated verson to take into accoun the roentaion of the robot
             double[] rTheta = new double[2];
             rTheta[0]=Math.sqrt((input.x*input.x)+(input.y*input.y));
