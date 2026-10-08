@@ -79,6 +79,7 @@ public class TeleOpMain extends LinearOpMode{
                     -rTheta[0]*Math.cos(rTheta[1]),
                     -rTheta[0]*Math.sin(rTheta[1])
             );
+            drive.intakeMotor.setPower(0);
             drive.setDrivePowers(new PoseVelocity2d(
                     rot,
                     rotPower
