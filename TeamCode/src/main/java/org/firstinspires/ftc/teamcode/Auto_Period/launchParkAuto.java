@@ -18,33 +18,33 @@ class launch {
     }
 
     public class spinUp implements Action {
-        private boolean initialized = false;
+        private boolean initialized = false; //hasnt been spun up yet
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet){
-            if(!initialized){
-                launchMotor.setPower(1);
-                initialized = true;
+            if(!initialized){ //if it hasnt been spun up yet
+                launchMotor.setPower(1); //spin it up
+                initialized = true; //say its been spun up
             }
 
-            double vel = launchMotor.getVelocity();
-            packet.put("launchMotorVelocity",vel);
-            return vel < 10_000.0;
+            double vel = launchMotor.getVelocity(); //how fast is it spinning
+            packet.put("launchMotorVelocity",vel); //tell us how fast its spinning
+            return vel < 10_000.0; //if velocity > 10_000.0 somethings per i dont know then just say it isnt
         }
     }
 
-    public Action launchStart(){
-        return new spinUp();
+    public Action motorStart(){
+        return new spinUp(); //runs the spinUp class
     }
 }
 public class launchParkAuto extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        launch launch1 = new launch(hardwareMap); //make a new launch function and use the launch motor for this one
+        launch launch1 = new launch(hardwareMap); //launch1 uses launchMotor
 
         waitForStart();
 
-        Actions.runBlocking(launch1.launchStart());
+        Actions.runBlocking(launch1.motorStart()); //spins launchMotor
     }
 
 }
