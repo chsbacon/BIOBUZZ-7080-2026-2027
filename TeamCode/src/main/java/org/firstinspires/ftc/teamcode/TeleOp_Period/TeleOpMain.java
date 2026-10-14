@@ -22,6 +22,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 //TODO change controller logic to when press Dpad in mode 1 to go to cardnal minus angle of robot
+//TODO update all file pathing for accuracy
 @TeleOp(name="TeleOpMain")
 public class TeleOpMain extends LinearOpMode{
     private MecanumDrive drive;
