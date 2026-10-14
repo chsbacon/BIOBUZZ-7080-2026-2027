@@ -21,6 +21,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
+//TODO change controller logic to when press Dpad in mode 1 to go to cardnal minus angle of robot
 @TeleOp(name="TeleOpMain")
 public class TeleOpMain extends LinearOpMode{
     private MecanumDrive drive;
@@ -70,15 +71,16 @@ public class TeleOpMain extends LinearOpMode{
                     -gamepad1.left_stick_y,
                     -gamepad1.left_stick_x
             );
-            //walahi
             //Takes inpute joystick commands and outpouts rotated verson to take into accoun the roentaion of the robot
             double[] rTheta = new double[2];
             rTheta[0]=Math.sqrt((input.x*input.x)+(input.y*input.y));
+            //TODO test if subtracting angle changes vector right way
             rTheta[1]=(Math.atan2(input.y,input.x))-Math.toRadians(angle);
             Vector2d rot = new Vector2d(
                     rTheta[0]*Math.cos(rTheta[1]),
                     rTheta[0]*Math.sin(rTheta[1])
             );
+            //TODO replace with PS4 controller output
             if(gamepad1.a){
                 drive.intakeMotor.setPower(1);
             } else if (gamepad1.y){
