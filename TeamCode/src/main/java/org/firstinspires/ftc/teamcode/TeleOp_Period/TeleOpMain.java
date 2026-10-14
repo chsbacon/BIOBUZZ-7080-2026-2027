@@ -74,13 +74,19 @@ public class TeleOpMain extends LinearOpMode{
             //Takes inpute joystick commands and outpouts rotated verson to take into accoun the roentaion of the robot
             double[] rTheta = new double[2];
             rTheta[0]=Math.sqrt((input.x*input.x)+(input.y*input.y));
-            rTheta[1]=Math.toDegrees(Math.atan2(input.y,input.x))-angle;
+            rTheta[1]=(Math.atan2(input.y,input.x))-Math.toRadians(angle);
             Vector2d rot = new Vector2d(
-                    -rTheta[0]*Math.cos(rTheta[1]),
-                    -rTheta[0]*Math.sin(rTheta[1])
+                    rTheta[0]*Math.cos(rTheta[1]),
+                    rTheta[0]*Math.sin(rTheta[1])
             );
+            if(gamepad1.a){
+                drive.intakeMotor.setPower(1);
+            } else if (gamepad1.y){
+                drive.intakeMotor.setPower(-1);
+            } else {
+                drive.intakeMotor.setPower(0);
+            }
 
-            drive.intakeMotor.setPower(0);
             drive.setDrivePowers(new PoseVelocity2d(
                     rot,
                     rotPower
