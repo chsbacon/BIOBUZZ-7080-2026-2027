@@ -38,6 +38,7 @@ public class TeleOpMain extends LinearOpMode{
         waitForStart();
         runtime.reset();
         double targetHeading = 0;
+        double prevDpadAngle=0;
         while(opModeIsActive()) {
             double pCoff = MecanumDrive.PARAMS.pCoff;
             drive.updatePoseEstimate();
@@ -46,9 +47,10 @@ public class TeleOpMain extends LinearOpMode{
             if(DpadChecker()) {
                 headingLock = true;
                 targetHeading = DpadAngle(anglesToCardnal(angle));
+                prevDpadAngle = targetHeading;
             }
             if (!headingLock) {
-                targetHeading = anglesToCardnal(angle);
+                targetHeading = prevDpadAngle;
             }
             double error= normalizeAngle(targetHeading - angle);
             if(Math.abs(error)<0.5){//At the request of alston, this has been changed to 0.5 degrees
@@ -60,14 +62,12 @@ public class TeleOpMain extends LinearOpMode{
                     modeSwitch=1;
                 }else {
                     modeSwitch = 0;
+                    //TODO this doesnt work, make it so when switch from 1 to 2, it goes to cardnal not prevDpad
+                    targetHeading = anglesToCardnal(angle);
+
                 }
             }
             prevCircle = gamepad1.circle;
-            if(modeSwitch==0){
-                rotPower=error*pCoff;
-            } else{
-                rotPower=-gamepad1.right_stick_x;
-            }
             Vector2d input = new Vector2d(
                     -gamepad1.left_stick_y,
                     -gamepad1.left_stick_x
@@ -75,13 +75,11 @@ public class TeleOpMain extends LinearOpMode{
             //Takes inpute joystick commands and outpouts rotated verson to take into accoun the roentaion of the robot
             double[] rTheta = new double[2];
             rTheta[0]=Math.sqrt((input.x*input.x)+(input.y*input.y));
-            //TODO test if subtracting angle changes vector right way
             rTheta[1]=(Math.atan2(input.y,input.x))-Math.toRadians(angle);
             Vector2d rot = new Vector2d(
                     rTheta[0]*Math.cos(rTheta[1]),
                     rTheta[0]*Math.sin(rTheta[1])
             );
-            //TODO replace with PS4 controller output
             if(gamepad1.a){
                 drive.intakeMotor.setPower(1);
             } else if (gamepad1.y){
@@ -89,7 +87,18 @@ public class TeleOpMain extends LinearOpMode{
             } else {
                 drive.intakeMotor.setPower(0);
             }
-
+            Vector2d rotInput = new Vector2d(
+                    -gamepad1.right_stick_y,
+                    -gamepad1.right_stick_x
+            );
+            if(modeSwitch == 1){
+                /*targetHeading = Math.toDegrees(Math.atan2(rotInput.y,rotInput.x)-Math.toRadians(angle));
+                error= normalizeAngle(targetHeading - angle);
+                */
+                rotPower= gamepad1.right_stick_x;
+            }else {
+                rotPower = error * pCoff;
+            }
             drive.setDrivePowers(new PoseVelocity2d(
                     rot,
                     rotPower
@@ -101,6 +110,8 @@ public class TeleOpMain extends LinearOpMode{
             telemetry.addData("ortCard",anglesToCardnal(Math.toDegrees(pose.heading.toDouble())));
             telemetry.addData("error",error);
             telemetry.addData("mode",modeSwitch);
+            telemetry.addData("targetHeading",targetHeading);
+            telemetry.addData("targetHeading-angle",targetHeading-angle);
             telemetry.update();
 
             TelemetryPacket packet = new TelemetryPacket();
