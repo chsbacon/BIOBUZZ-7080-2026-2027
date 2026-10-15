@@ -17,8 +17,14 @@ public class TeleOp_Test extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        DcMotorEx leftFront, leftRear, rightRear, rightFront;
+        double intakePower = 0.0;
 
+        boolean intakeDebounce = false;
+
+        DcMotorEx leftFront, leftRear, rightRear, rightFront;
+        DcMotorEx intakeMotor;
+
+        intakeMotor = hardwareMap.get(DcMotorEx.class, "intakeMotor");
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
         leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
         rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
@@ -38,12 +44,29 @@ public class TeleOp_Test extends LinearOpMode {
 
         while(opModeIsActive()){
 
+            boolean faceButtonY = gamepad1.y;
+            boolean faceButtonA = gamepad1.a;
 
+            intakeMotor.setPower(-intakePower);
+
+            if (!faceButtonY && !faceButtonA){
+                intakeDebounce = false;
+            }
+
+            if (intakePower < 1 && faceButtonY && !intakeDebounce){
+                intakePower = intakePower + 0.1;
+                intakeDebounce = true;
+            }
+
+            if(intakePower > 0 && faceButtonA && !intakeDebounce){
+                intakePower = intakePower - 0.1;
+                intakeDebounce = true;
+            }
 
             double max;
 
             double xInput = gamepad1.left_stick_x;
-            double yInput = gamepad1.left_stick_y;
+            double yInput = -gamepad1.left_stick_y;
             double rotationalInput = gamepad1.right_stick_x;
 
             double leftFrontPower, leftRearPower, rightFrontPower, rightRearPower;
