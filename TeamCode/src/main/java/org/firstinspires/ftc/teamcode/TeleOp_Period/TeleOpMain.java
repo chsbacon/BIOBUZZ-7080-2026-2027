@@ -39,6 +39,8 @@ public class TeleOpMain extends LinearOpMode{
         runtime.reset();
         double targetHeading = 0;
         double prevDpadAngle=0;
+        boolean debounce = true;
+        double intakePower=0;
         while(opModeIsActive()) {
             double pCoff = MecanumDrive.PARAMS.pCoff;
             drive.updatePoseEstimate();
@@ -62,7 +64,7 @@ public class TeleOpMain extends LinearOpMode{
                     modeSwitch=1;
                 }else {
                     modeSwitch = 0;
-                    //TODO this doesnt work, make it so when switch from 1 to 2, it goes to cardnal not prevDpad
+                    //TODO this doesnt work, make it so when switch from 0 to 1, it goes to cardnal not prevDpad
                     targetHeading = anglesToCardnal(angle);
 
                 }
@@ -80,13 +82,18 @@ public class TeleOpMain extends LinearOpMode{
                     rTheta[0]*Math.cos(rTheta[1]),
                     rTheta[0]*Math.sin(rTheta[1])
             );
-            if(gamepad1.a){
-                drive.intakeMotor.setPower(1);
-            } else if (gamepad1.y){
-                drive.intakeMotor.setPower(-1);
-            } else {
-                drive.intakeMotor.setPower(0);
+            if(gamepad1.a && debounce){
+                debounce = false;
+                intakePower +=0.2;
             }
+            if (gamepad1.y && debounce){
+                debounce = false;
+                intakePower-=0.2;
+            }
+            if(!gamepad1.y && !gamepad1.a){
+                debounce = true;
+            }
+            drive.intakeMotor.setPower(intakePower);
             Vector2d rotInput = new Vector2d(
                     -gamepad1.right_stick_y,
                     -gamepad1.right_stick_x
