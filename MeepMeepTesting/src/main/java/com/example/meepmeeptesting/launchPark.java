@@ -23,6 +23,7 @@ public class launchPark {
                 .strafeTo(new Vector2d(40,-12))
                 //launch()
                 .waitSeconds(2)
+
                 .setTangent(Math.toRadians(-90))
                 //.turn(Math.toRadians(90))
                 .splineToSplineHeading(new Pose2d(0,-45,Math.toRadians(90)),Math.toRadians(180))
