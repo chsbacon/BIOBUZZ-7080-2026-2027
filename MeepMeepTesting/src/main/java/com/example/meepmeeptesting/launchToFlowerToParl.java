@@ -23,13 +23,17 @@ public class launchToFlowerToParl {
                 .strafeTo(new Vector2d(40,-12))
                 //launch()
                 .waitSeconds(2)
-                .splineToSplineHeading(new Pose2d(59,23.5,Math.toRadians(0)),Math.toRadians(90))
+                .turnTo(Math.toRadians(-90))
+                .splineToConstantHeading(new Vector2d(61,-50),Math.toRadians(-90))
+                .waitSeconds(1)
+                .lineToY(-60)
+                .waitSeconds(1)
+                .splineToConstantHeading(new Vector2d(55,-45 ),Math.toRadians(-90))
                 .setTangent(Math.toRadians(-90))
                 //.turn(Math.toRadians(90))
                 .splineToSplineHeading(new Pose2d(0,-45,Math.toRadians(90)),Math.toRadians(180))
                 .setTangent(Math.toRadians(180))
                 .splineToConstantHeading(new Vector2d(-24,-55),Math.toRadians(180))
-
                 .build());
         Image customImg = null;
         try {
