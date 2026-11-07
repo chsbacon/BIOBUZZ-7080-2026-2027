@@ -72,6 +72,7 @@ public final class MecanumDrive {
         public double kS = 0.8046878918268314;
         public double kV = 0.00038811294516403685;
         public double kA = 0.000035;
+        public double pCoff = 0.03;
 
         // path profile parameters (in inches)
         public double maxWheelVel = 50;
@@ -107,7 +108,7 @@ public final class MecanumDrive {
     public final AccelConstraint defaultAccelConstraint =
             new ProfileAccelConstraint(PARAMS.minProfileAccel, PARAMS.maxProfileAccel);
 
-    public final DcMotorEx leftFront, leftBack, rightBack, rightFront;
+    public final DcMotorEx leftFront, leftBack, rightBack, rightFront, intakeMotor;
 
     public final VoltageSensor voltageSensor;
 
@@ -122,7 +123,7 @@ public final class MecanumDrive {
     private final DownsampledWriter mecanumCommandWriter = new DownsampledWriter("MECANUM_COMMAND", 50_000_000);
 
     public class DriveLocalizer implements Localizer {
-        public final Encoder leftFront, leftBack, rightBack, rightFront;
+        public final Encoder leftFront, leftBack, rightBack, rightFront,intakeMotor;
         public final IMU imu;
 
         private int lastLeftFrontPos, lastleftBackPos, lastrightBackPos, lastRightFrontPos;
@@ -135,6 +136,7 @@ public final class MecanumDrive {
             leftBack = new OverflowEncoder(new RawEncoder(MecanumDrive.this.leftBack));
             rightBack = new OverflowEncoder(new RawEncoder(MecanumDrive.this.rightBack));
             rightFront = new OverflowEncoder(new RawEncoder(MecanumDrive.this.rightFront));
+            intakeMotor = new OverflowEncoder(new RawEncoder(MecanumDrive.this.intakeMotor));
             leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
             leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
             imu = lazyImu.get();
@@ -231,6 +233,8 @@ public final class MecanumDrive {
         leftBack = hardwareMap.get(DcMotorEx.class, "leftBack");
         rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+        intakeMotor = hardwareMap.get(DcMotorEx.class,"intakeMotor");
+        intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

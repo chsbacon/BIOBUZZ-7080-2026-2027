@@ -15,6 +15,7 @@ public class AutoTest extends LinearOpMode{
         Pose2d beginPose = new Pose2d(61, -12, Math.toRadians(180));
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
         waitForStart();
+
         Actions.runBlocking(
                 drive.actionBuilder(beginPose)
                         .strafeTo(new Vector2d(40,-12))
