@@ -54,21 +54,21 @@ public class TeleOpMain extends LinearOpMode{
             if (!headingLock) {
                 targetHeading = prevDpadAngle;
             }
+            if(gamepad1.circle && !prevCircle){
+                if(modeSwitch==0){
+                    modeSwitch=1;
+                }else{
+                    modeSwitch = 0;
+                    targetHeading = anglesToCardnal(angle);
+                    prevDpadAngle = targetHeading;
+                    headingLock = true;
+                }
+            }
             double error= normalizeAngle(targetHeading - angle);
             if(Math.abs(error)<0.5){//At the request of alston, this has been changed to 0.5 degrees
                 headingLock = false;
             }
             double rotPower;
-            if(gamepad1.circle && !prevCircle){
-                if(modeSwitch==0){
-                    modeSwitch=1;
-                }else {
-                    modeSwitch = 0;
-                    //TODO this doesnt work, make it so when switch from 0 to 1, it goes to cardnal not prevDpad
-                    targetHeading = anglesToCardnal(angle);
-
-                }
-            }
             prevCircle = gamepad1.circle;
             Vector2d input = new Vector2d(
                     -gamepad1.left_stick_y,
@@ -94,15 +94,11 @@ public class TeleOpMain extends LinearOpMode{
                 debounce = true;
             }
             drive.intakeMotor.setPower(intakePower);
-            Vector2d rotInput = new Vector2d(
-                    -gamepad1.right_stick_y,
-                    -gamepad1.right_stick_x
-            );
             if(modeSwitch == 1){
                 /*targetHeading = Math.toDegrees(Math.atan2(rotInput.y,rotInput.x)-Math.toRadians(angle));
                 error= normalizeAngle(targetHeading - angle);
                 */
-                rotPower= gamepad1.right_stick_x;
+                rotPower= -gamepad1.right_stick_x;
             }else {
                 rotPower = error * pCoff;
             }
@@ -127,7 +123,6 @@ public class TeleOpMain extends LinearOpMode{
             FtcDashboard.getInstance().sendTelemetryPacket(packet);
         }
     }
-    //returns the clostest
     public double anglesToCardnal(double angle){
         if(angle >= -45 && angle <= 45){
             return 0;
