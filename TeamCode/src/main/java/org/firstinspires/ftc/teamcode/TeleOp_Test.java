@@ -13,7 +13,6 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 public class TeleOp_Test extends LinearOpMode {
 
 
-
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -42,69 +41,101 @@ public class TeleOp_Test extends LinearOpMode {
 
         waitForStart();
 
-        while(opModeIsActive()){
+        while (opModeIsActive()) {
 
             boolean faceButtonY = gamepad1.y;
             boolean faceButtonA = gamepad1.a;
 
-            intakeMotor.setPower(-intakePower);
+            double intakePower = 0.0;
 
-            if (!faceButtonY && !faceButtonA){
-                intakeDebounce = false;
+            boolean intakeDebounce = false;
+
+            DcMotorEx intakeMotor;
+
+            intakeMotor = hardwareMap.get(DcMotorEx.class, "intakeMotor");
+
+            waitForStart();
+
+            while (opModeIsActive()) {
+
+                boolean faceButtonY = gamepad1.y;
+                boolean faceButtonA = gamepad1.a;
+
+                intakeMotor.setPower(-intakePower);
+
+                if (!faceButtonY && !faceButtonA) {
+                    intakeDebounce = false;
+                }
+
+                if (intakePower < 1 && faceButtonY && !intakeDebounce) {
+                    intakePower = intakePower + 0.1;
+                    intakeDebounce = true;
+                }
+
+                if (intakePower > -.3 && faceButtonA && !intakeDebounce) {
+                    intakePower = intakePower - 0.1;
+                    intakeDebounce = true;
+
+                    intakeMotor.setPower(-intakePower);
+
+                    if (!faceButtonY && !faceButtonA) {
+                        intakeDebounce = false;
+                    }
+
+                    if (intakePower < 1 && faceButtonY && !intakeDebounce) {
+                        intakePower = intakePower + 0.1;
+                        intakeDebounce = true;
+                    }
+
+                    if (intakePower > 0 && faceButtonA && !intakeDebounce) {
+                        intakePower = intakePower - 0.1;
+                        intakeDebounce = true;
+                    }
+
+                    double max;
+
+                    double xInput = gamepad1.left_stick_x;
+                    double yInput = -gamepad1.left_stick_y;
+                    double rotationalInput = gamepad1.right_stick_x;
+
+                    double leftFrontPower, leftRearPower, rightFrontPower, rightRearPower;
+
+                    //Mecanum wheel equations
+                    leftFrontPower = yInput + xInput + rotationalInput;
+                    rightFrontPower = yInput - xInput - rotationalInput;
+                    leftRearPower = yInput - xInput + rotationalInput;
+                    rightRearPower = yInput + xInput - rotationalInput;
+
+                    max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
+                    max = Math.max(max, Math.abs(leftRearPower));
+                    max = Math.max(max, Math.abs(rightRearPower));
+                    //Limits power to 1.0 and translates other values relative to the maximum value
+
+                    if (max > 1.0) {
+
+                        leftFrontPower /= max;
+                        rightFrontPower /= max;
+                        leftRearPower /= max;
+                        rightRearPower /= max;
+
+                    }
+
+                    leftFront.setPower(leftFrontPower);
+                    leftRear.setPower(leftRearPower);
+                    rightFront.setPower(rightFrontPower);
+                    rightRear.setPower(leftFrontPower);
+
+                    telemetry.addData("xInput yInput", "%4.2f, %4.2f", xInput, yInput);
+
+                    telemetry.addData("Front Left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
+                    telemetry.addData("Back  Left/Right", "%4.2f, %4.2f", leftRearPower, rightRearPower);
+
+                    telemetry.update();
+
+                }
+
             }
-
-            if (intakePower < 1 && faceButtonY && !intakeDebounce){
-                intakePower = intakePower + 0.1;
-                intakeDebounce = true;
-            }
-
-            if(intakePower > 0 && faceButtonA && !intakeDebounce){
-                intakePower = intakePower - 0.1;
-                intakeDebounce = true;
-            }
-
-            double max;
-
-            double xInput = gamepad1.left_stick_x;
-            double yInput = -gamepad1.left_stick_y;
-            double rotationalInput = gamepad1.right_stick_x;
-
-            double leftFrontPower, leftRearPower, rightFrontPower, rightRearPower;
-
-            //Mecanum wheel equations
-            leftFrontPower = yInput + xInput + rotationalInput;
-            rightFrontPower = yInput - xInput - rotationalInput;
-            leftRearPower = yInput - xInput + rotationalInput;
-            rightRearPower = yInput + xInput - rotationalInput;
-
-            max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
-            max = Math.max(max, Math.abs(leftRearPower));
-            max = Math.max(max, Math.abs(rightRearPower));
-            //Limits power to 1.0 and translates other values relative to the maximum value
-
-            if (max > 1.0) {
-
-                leftFrontPower /= max;
-                rightFrontPower /= max;
-                leftRearPower /= max;
-                rightRearPower /= max;
-
-            }
-
-            leftFront.setPower(leftFrontPower);
-            leftRear.setPower(leftRearPower);
-            rightFront.setPower(rightFrontPower);
-            rightRear.setPower(leftFrontPower);
-
-            telemetry.addData("xInput yInput", "%4.2f, %4.2f", xInput, yInput);
-
-            telemetry.addData("Front Left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
-            telemetry.addData("Back  Left/Right", "%4.2f, %4.2f", leftRearPower, rightRearPower);
-
-            telemetry.update();
 
         }
-
     }
-
 }

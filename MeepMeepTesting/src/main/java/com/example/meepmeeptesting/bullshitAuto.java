@@ -16,7 +16,7 @@ public class bullshitAuto {
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
-                .setConstraints(1, 0.01, Math.toRadians(1800000), Math.toRadians(5*1800), 18)
+                .setConstraints(60,2.5, Math.toRadians(1800000), Math.toRadians(5*1800), 18)
                 .build();
 
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-61, -9, Math.toRadians(0)))

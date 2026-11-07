@@ -35,7 +35,7 @@ public class intakeTest extends LinearOpMode {
                 intakeDebounce = true;
             }
 
-            if(intakePower > 0 && faceButtonA && !intakeDebounce){
+            if(intakePower > -.3 && faceButtonA && !intakeDebounce){
                 intakePower = intakePower - 0.1;
                 intakeDebounce = true;
             }
