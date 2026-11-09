@@ -19,10 +19,11 @@ public class intakeAuto extends LinearOpMode {
         waitForStart();
         Actions.runBlocking(
                 drive.actionBuilder(beginPose)
-                        .strafeToLinearHeading(new Vector2d(56, -12), Math.toRadians(-90))
+                        .strafeTo(new Vector2d(56, -12))
+                        .turnTo(Math.toRadians(-90))
                         .build()
         );
-        intakeMotor.setPower(1);
+        intakeMotor.setPower(-1);
         Actions.runBlocking(
                 drive.actionBuilder(new Pose2d (61,-12,Math.toRadians(-90)))
                         .setTangent(Math.toRadians(-90))
