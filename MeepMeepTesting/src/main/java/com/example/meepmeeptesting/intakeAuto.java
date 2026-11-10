@@ -20,7 +20,8 @@ public class intakeAuto {
                 .build();
 
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(61, -12, Math.toRadians(180)))
-                        .strafeToLinearHeading(new Vector2d(56,-12),Math.toRadians(-90))
+                        .strafeTo(new Vector2d(56,-12))
+                        .turnTo(Math.toRadians(-90))
                         .setTangent(Math.toRadians(-90))
                         .splineToConstantHeading(new Vector2d(61,-61),Math.toRadians(-90))
                 .build());
