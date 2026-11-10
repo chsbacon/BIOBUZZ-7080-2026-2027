@@ -10,7 +10,7 @@ import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
-public class launchToFlowerToParl {
+public class stepOutAuto {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(700);
 
@@ -19,21 +19,8 @@ public class launchToFlowerToParl {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 18)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(61, -12, Math.toRadians(180)))
-                .strafeTo(new Vector2d(40,-12))
-                //launch()
-                .waitSeconds(2)
-                .turnTo(Math.toRadians(-90))
-                .splineToConstantHeading(new Vector2d(61,-50),Math.toRadians(-90))
-                .waitSeconds(1)
-                .lineToY(-60)
-                .waitSeconds(1)
-                .splineToConstantHeading(new Vector2d(55,-45 ),Math.toRadians(-90))
-                .setTangent(Math.toRadians(-90))
-                //.turn(Math.toRadians(90))
-                .splineToSplineHeading(new Pose2d(0,-45,Math.toRadians(90)),Math.toRadians(180))
-                .setTangent(Math.toRadians(180))
-                .splineToConstantHeading(new Vector2d(-24,-55),Math.toRadians(180))
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-61, -55, Math.toRadians(0)))
+                .strafeTo(new Vector2d(-49,-55))
                 .build());
         Image customImg = null;
         try {
